@@ -1,13 +1,13 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Register() {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -16,18 +16,18 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
       await register(username, email, password);
       setSuccess(true);
-      setTimeout(() => navigate('/login'), 1500);
+      setTimeout(() => navigate("/login"), 1500);
     } catch (err) {
       const msg =
         err.response?.data?.username?.[0] ||
         err.response?.data?.password?.[0] ||
-        'Registration failed. Please try again.';
+        "Registration failed. Please try again.";
       setError(msg);
     } finally {
       setLoading(false);
@@ -40,9 +40,10 @@ export default function Register() {
         className="absolute inset-0 opacity-[0.06] pointer-events-none"
         style={{
           backgroundImage:
-            'linear-gradient(#E8EAED 1px, transparent 1px), linear-gradient(90deg, #E8EAED 1px, transparent 1px)',
-          backgroundSize: '64px 64px',
-          maskImage: 'radial-gradient(ellipse 60% 50% at 50% 0%, black, transparent)',
+            "linear-gradient(#E8EAED 1px, transparent 1px), linear-gradient(90deg, #E8EAED 1px, transparent 1px)",
+          backgroundSize: "64px 64px",
+          maskImage:
+            "radial-gradient(ellipse 60% 50% at 50% 0%, black, transparent)",
         }}
       />
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#3ECF8E]/10 rounded-full blur-3xl pointer-events-none" />
@@ -53,24 +54,56 @@ export default function Register() {
             from { opacity: 0; transform: translateY(16px); }
             to { opacity: 1; transform: translateY(0); }
           }
+
+          /* NAYA: browser autofill ka light background force-override,
+             taake dark theme aur eye icon hamesha visible rahen */
+          input:-webkit-autofill,
+          input:-webkit-autofill:hover,
+          input:-webkit-autofill:focus,
+          input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0px 1000px #0B0E14 inset !important;
+            box-shadow: 0 0 0px 1000px #0B0E14 inset !important;
+            -webkit-text-fill-color: #E8EAED !important;
+            caret-color: #E8EAED;
+            transition: background-color 9999s ease-in-out 0s;
+          }
         `}</style>
 
         <Link to="/" className="flex items-center justify-center gap-2.5 mb-10">
           <div className="w-9 h-9 rounded-lg bg-[#3ECF8E] flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#0B0E14]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-[#0B0E14]"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
           </div>
-          <span className="font-semibold text-lg tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+          <span
+            className="font-semibold text-lg tracking-tight"
+            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          >
             TruthLens
           </span>
         </Link>
 
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-medium mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+          <h1
+            className="text-2xl font-medium mb-2"
+            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          >
             Create your account
           </h1>
-          <p className="text-white/40 text-sm">Start analyzing news in seconds</p>
+          <p className="text-white/40 text-sm">
+            Start analyzing news in seconds
+          </p>
         </div>
 
         <div className="border border-white/8 bg-white/2 rounded-2xl p-7">
@@ -79,7 +112,13 @@ export default function Register() {
               Account created! Redirecting to sign in...
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            // NAYA: form-level autoComplete="off" — kuch browsers isay
+            // sirf form tag par honor karte hain, per-field ke sath milake.
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-4"
+              autoComplete="off"
+            >
               {error && (
                 <div className="bg-[#E8935B]/10 border border-[#E8935B]/25 text-[#E8935B] text-sm rounded-lg px-4 py-3">
                   {error}
@@ -87,39 +126,51 @@ export default function Register() {
               )}
 
               <div>
-                <label className="block text-xs font-medium text-white/50 mb-2">Username</label>
+                <label className="block text-xs font-medium text-white/50 mb-2">
+                  Username
+                </label>
                 <input
                   type="text"
+                  name="new-username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
                   autoFocus
+                  autoComplete="off"
                   className="w-full bg-black/30 border border-white/10 text-[#E8EAED] rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#3ECF8E] focus:border-[#3ECF8E] transition-colors placeholder-white/25"
                   placeholder="Choose a username"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-white/50 mb-2">Email</label>
+                <label className="block text-xs font-medium text-white/50 mb-2">
+                  Email
+                </label>
                 <input
                   type="email"
+                  name="new-email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  autoComplete="off"
                   className="w-full bg-black/30 border border-white/10 text-[#E8EAED] rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#3ECF8E] focus:border-[#3ECF8E] transition-colors placeholder-white/25"
                   placeholder="you@example.com"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-white/50 mb-2">Password</label>
+                <label className="block text-xs font-medium text-white/50 mb-2">
+                  Password
+                </label>
                 <div className="relative">
                   <input
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
+                    name="new-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength={6}
+                    autoComplete="new-password"
                     className="w-full bg-black/30 border border-white/10 text-[#E8EAED] rounded-lg px-3.5 py-2.5 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-[#3ECF8E] focus:border-[#3ECF8E] transition-colors placeholder-white/25"
                     placeholder="At least 6 characters"
                   />
@@ -128,16 +179,45 @@ export default function Register() {
                     onClick={() => setShowPassword((s) => !s)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"
                     tabIndex={-1}
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                   >
                     {showPassword ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4.5 w-4.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.75}
+                          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                        />
                       </svg>
                     ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4.5 w-4.5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.75}
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.75}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
                       </svg>
                     )}
                   </button>
@@ -149,15 +229,18 @@ export default function Register() {
                 disabled={loading}
                 className="w-full bg-[#3ECF8E] text-[#0B0E14] font-medium rounded-lg px-4 py-2.5 text-sm hover:bg-[#5adba3] transition-colors disabled:opacity-50 mt-2"
               >
-                {loading ? 'Creating account...' : 'Create account'}
+                {loading ? "Creating account..." : "Create account"}
               </button>
             </form>
           )}
         </div>
 
         <p className="text-center text-white/40 text-sm mt-6">
-          Already have an account?{' '}
-          <Link to="/login" className="text-[#3ECF8E] hover:text-[#5adba3] font-medium transition-colors">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-[#3ECF8E] hover:text-[#5adba3] font-medium transition-colors"
+          >
             Sign in
           </Link>
         </p>
