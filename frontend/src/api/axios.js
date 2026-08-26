@@ -1,17 +1,20 @@
-import axios from 'axios';
+import axios from "axios";
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
 
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api',
+  baseURL: API_BASE_URL,
 });
 
 // Ye endpoints public hain — inpe kabhi bhi Authorization token nahi lagna chahiye
 const PUBLIC_ENDPOINTS = [
-  '/auth/login/',
-  '/auth/register/',
-  '/auth/forgot-password/',
-  '/auth/reset-password/',
-  '/auth/refresh/',
-  '/contact/',
+  "/auth/login/",
+  "/auth/register/",
+  "/auth/forgot-password/",
+  "/auth/reset-password/",
+  "/auth/refresh/",
+  "/contact/",
 ];
 
 function isPublicEndpoint(url) {
@@ -21,7 +24,7 @@ function isPublicEndpoint(url) {
 // Request interceptor: sirf protected endpoints pe token attach karo
 api.interceptors.request.use((config) => {
   if (!isPublicEndpoint(config.url)) {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem("access_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -52,12 +55,12 @@ api.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
+      const refreshToken = localStorage.getItem("refresh_token");
 
-      const refreshToken = localStorage.getItem('refresh_token');
       if (!refreshToken) {
         // Refresh token bhi nahi hai — user ko login page pe bhejna hoga
         localStorage.clear();
-        window.location.href = '/login';
+        window.location.href = "/login";
         return Promise.reject(error);
       }
 
@@ -72,31 +75,27 @@ api.interceptors.response.use(
       }
 
       isRefreshing = true;
-
       try {
-        const response = await axios.post(
-          'http://127.0.0.1:8000/api/auth/refresh/',
-          { refresh: refreshToken }
-        );
+        const response = await axios.post(`${API_BASE_URL}/auth/refresh/`, {
+          refresh: refreshToken,
+        });
         const newAccessToken = response.data.access;
-
-        localStorage.setItem('access_token', newAccessToken);
+        localStorage.setItem("access_token", newAccessToken);
         isRefreshing = false;
         onRefreshed(newAccessToken);
-
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
         // Refresh token bhi expire/invalid ho chuka — ab dobara login zaroori hai
         isRefreshing = false;
         localStorage.clear();
-        window.location.href = '/login';
+        window.location.href = "/login";
         return Promise.reject(refreshError);
       }
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;
