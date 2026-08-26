@@ -125,6 +125,11 @@ STORAGES = {
 CORS_ALLOWED_ORIGINS = config(
     "CORS_ALLOWED_ORIGINS", default="http://localhost:5173", cast=Csv()
 )
+
+CORS_ALLOWED_ORIGINS = [
+    "https://fake-news-detection-eight-mu.vercel.app",
+]
+
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", default="", cast=Csv())
