@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { RevealSection } from "./shared";
+import { RevealSection } from "./Shared";
 
 export default function CTASection() {
   return (

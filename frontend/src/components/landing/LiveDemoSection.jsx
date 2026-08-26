@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { RevealSection } from "./shared";
+import { RevealSection } from "./Shared";
 
 // Real / Fake / Uncertain examples so all three verdict states are shown.
 const DEMO_EXAMPLES = [

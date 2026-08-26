@@ -1,4 +1,4 @@
-import { RevealSection } from "./shared";
+import { RevealSection } from "./Shared";
 
 export default function BilingualSection() {
   return (
