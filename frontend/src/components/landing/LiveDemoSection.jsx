@@ -86,17 +86,17 @@ function LiveScanDemo() {
 
   return (
     <div className="rounded-2xl border border-white/10 bg-[#10141D] p-6 sm:p-8 shadow-2xl shadow-black/40">
-      {/* Window chrome + label */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-white/15" />
-          <span className="w-2.5 h-2.5 rounded-full bg-white/15" />
-          <span className="w-2.5 h-2.5 rounded-full bg-white/15" />
-          <span className="ml-2 text-xs text-white/40 font-mono">
+      {/* Window chrome + label — wraps on narrow screens instead of overlapping */}
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5 mb-6">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="w-2.5 h-2.5 rounded-full bg-white/15 shrink-0" />
+          <span className="w-2.5 h-2.5 rounded-full bg-white/15 shrink-0" />
+          <span className="w-2.5 h-2.5 rounded-full bg-white/15 shrink-0" />
+          <span className="ml-2 text-xs text-white/40 font-mono truncate">
             analyzing_input.txt
           </span>
         </div>
-        <span className="text-[11px] uppercase tracking-wider text-[#3ECF8E]/80 font-medium">
+        <span className="text-[11px] uppercase tracking-wider text-[#3ECF8E]/80 font-medium whitespace-nowrap">
           Live model preview
         </span>
       </div>
@@ -130,7 +130,7 @@ function LiveScanDemo() {
       </div>
 
       {/* Progress + verdict */}
-      <div className="flex items-center justify-between border-t border-white/8 pt-5">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-t border-white/8 pt-5">
         <div className="flex items-center gap-2.5">
           <div className="h-1.5 bg-white/10 rounded-full overflow-hidden w-28 sm:w-32">
             <div
@@ -153,7 +153,7 @@ function LiveScanDemo() {
           }`}
         >
           <span
-            className="w-2 h-2 rounded-full"
+            className="w-2 h-2 rounded-full shrink-0"
             style={{ backgroundColor: example.color }}
           />
           <span

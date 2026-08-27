@@ -260,6 +260,11 @@ export default function Hero() {
       <div className="relative max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
         {/* Left: text content */}
         <div className="text-center lg:text-left">
+          {/* Mobile/tablet-only robot — shown above the heading, hidden on lg+ where the side robot takes over */}
+          <div className="flex lg:hidden justify-center mb-6 scale-[0.7] origin-center">
+            <HeroRobot />
+          </div>
+
           <div className="inline-flex items-center gap-2 border border-white/10 rounded-full px-3.5 py-1.5 mb-8 text-xs text-white/60 bg-[#0B0E14]/60 backdrop-blur-sm">
             <span className="w-1.5 h-1.5 rounded-full bg-[#3ECF8E]" />
             Trained on 44,000+ verified news articles
@@ -295,7 +300,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Right: animated robot mascot */}
+        {/* Right: animated robot mascot — desktop only (mobile version shown above) */}
         <div className="hidden lg:flex justify-center">
           <HeroRobot />
         </div>
