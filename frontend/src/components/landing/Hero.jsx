@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 // ===== Hero robot mascot =====
 // A friendly SVG robot that idles with a gentle float, blinks
@@ -252,6 +253,7 @@ function HeroRobot() {
 }
 
 export default function Hero() {
+  const { user } = useAuth();
   return (
     <header id="top" className="relative pt-40 pb-24 px-6 overflow-hidden">
       {/* Soft ambient glow — no distracting animation, just depth */}
@@ -285,18 +287,29 @@ export default function Hero() {
           </p>
 
           <div className="flex items-center justify-center lg:justify-start gap-3">
-            <Link
-              to="/register"
-              className="bg-[#3ECF8E] text-[#0B0E14] font-medium rounded-lg px-6 py-3 text-sm hover:bg-[#5adba3] transition-colors"
-            >
-              Analyze an article
-            </Link>
-            <Link
-              to="/login"
-              className="text-white/70 hover:text-white font-medium px-6 py-3 rounded-lg border border-white/10 hover:border-white/25 transition-colors text-sm"
-            >
-              Sign in
-            </Link>
+            {user ? (
+              <Link
+                to="/dashboard"
+                className="bg-[#3ECF8E] text-[#0B0E14] font-medium rounded-lg px-6 py-3 text-sm hover:bg-[#5adba3] transition-colors"
+              >
+                Analyze an article
+              </Link>
+            ) : (
+              <>
+                <Link
+                  to="/register"
+                  className="bg-[#3ECF8E] text-[#0B0E14] font-medium rounded-lg px-6 py-3 text-sm hover:bg-[#5adba3] transition-colors"
+                >
+                  Analyze an article
+                </Link>
+                <Link
+                  to="/login"
+                  className="text-white/70 hover:text-white font-medium px-6 py-3 rounded-lg border border-white/10 hover:border-white/25 transition-colors text-sm"
+                >
+                  Sign in
+                </Link>
+              </>
+            )}
           </div>
         </div>
 
