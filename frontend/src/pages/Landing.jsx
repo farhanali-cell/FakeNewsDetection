@@ -7,28 +7,8 @@ import HowItWorks from "../components/landing/HowItWorks";
 import BilingualSection from "../components/landing/BilingualSection";
 import Capabilities from "../components/landing/Capabilities";
 import CTASection from "../components/landing/CTASection";
-import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
-import { useAuth } from "../../context/AuthContext.jsx";
 
 export default function Landing() {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    setMenuOpen(false);
-    navigate("/");
-  };
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
     <div className="min-h-screen bg-[#0B0E14] text-[#E8EAED] font-sans selection:bg-[#3ECF8E]/30">
       {/* Scoped keyframe for the WhatsApp button's pulse ring */}
