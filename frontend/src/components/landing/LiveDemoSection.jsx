@@ -101,8 +101,11 @@ function LiveScanDemo() {
         </span>
       </div>
 
-      {/* Headline being scanned */}
-      <div className="min-h-21 sm:min-h-19 flex flex-wrap content-start gap-x-2 gap-y-1 font-mono text-base sm:text-lg leading-relaxed mb-6">
+      {/* Headline being scanned — fixed min-height sized for the longest
+          example (worst case ~4 wrapped lines on mobile) so the card's
+          height never changes as examples cycle, which previously made
+          the sections below jump/reflow every couple seconds. */}
+      <div className="min-h-[132px] sm:min-h-[104px] flex flex-wrap content-start gap-x-2 gap-y-1 font-mono text-base sm:text-lg leading-relaxed mb-6">
         {example.words.map((word, i) => {
           const isRevealed = i < revealedCount;
           const isFlagged = example.flagged.includes(i);
