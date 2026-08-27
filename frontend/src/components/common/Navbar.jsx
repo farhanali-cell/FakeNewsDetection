@@ -1,8 +1,18 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext.jsx";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    setMenuOpen(false);
+    navigate("/");
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -62,18 +72,84 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
-          <Link
-            to="/login"
-            className="text-sm text-white/70 hover:text-white transition-colors hidden sm:block"
-          >
-            Sign in
-          </Link>
-          <Link
-            to="/register"
-            className="text-sm font-medium bg-[#3ECF8E] text-[#0B0E14] hover:bg-[#5adba3] px-4 py-2 rounded-lg transition-colors"
-          >
-            Sign up free
-          </Link>
+          {user ? (
+            <div className="relative">
+              <button
+                onClick={() => setMenuOpen((o) => !o)}
+                className="flex items-center gap-2.5 pl-1 pr-3 py-1 rounded-full border border-white/10 hover:border-white/25 transition-colors"
+              >
+                <span className="w-7 h-7 rounded-full bg-[#3ECF8E] text-[#0B0E14] text-xs font-semibold flex items-center justify-center uppercase">
+                  {user.username.charAt(0)}
+                </span>
+                <span className="text-sm text-white/80 hidden sm:block">
+                  {user.username}
+                </span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-3.5 w-3.5 text-white/40 transition-transform ${
+                    menuOpen ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+
+              {menuOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setMenuOpen(false)}
+                  />
+                  <div className="absolute right-0 mt-2 w-48 rounded-xl border border-white/10 bg-[#10141D] shadow-xl shadow-black/40 py-1.5 z-50">
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setMenuOpen(false)}
+                      className="block px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      to="/history"
+                      onClick={() => setMenuOpen(false)}
+                      className="block px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                    >
+                      History
+                    </Link>
+                    <div className="my-1 border-t border-white/10" />
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2.5 text-sm text-[#E8935B] hover:bg-white/5 transition-colors"
+                    >
+                      Log out
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="text-sm text-white/70 hover:text-white transition-colors hidden sm:block"
+              >
+                Sign in
+              </Link>
+              <Link
+                to="/register"
+                className="text-sm font-medium bg-[#3ECF8E] text-[#0B0E14] hover:bg-[#5adba3] px-4 py-2 rounded-lg transition-colors"
+              >
+                Sign up free
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
