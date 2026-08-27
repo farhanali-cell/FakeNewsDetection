@@ -9,7 +9,7 @@ import Capabilities from "../components/landing/Capabilities";
 import CTASection from "../components/landing/CTASection";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { useAuth } from "../context/AuthContext.jsx";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 export default function Landing() {
   const [scrolled, setScrolled] = useState(false);
