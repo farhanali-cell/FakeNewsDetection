@@ -1,64 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
+import Navbar from "../components/common/Navbar";
+import Footer from "../components/common/Footer";
 
 /* ---------------- Navbar ---------------- */
-function Navbar() {
-  return (
-    <nav className="sticky top-0 z-30 flex items-center justify-between px-5 sm:px-8 py-4 bg-[#0B0E14]/80 backdrop-blur-xl border-b border-white/8">
-      <Link to="/" className="flex items-center gap-2.5">
-        <div className="w-8 h-8 rounded-lg bg-[#3ECF8E] flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5 text-[#0B0E14]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </div>
-        <span className="font-semibold text-[15px] tracking-tight text-white" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
-          TruthLens
-        </span>
-      </Link>
 
-      <div className="hidden sm:flex items-center gap-8">
-        <Link to="/" className="text-sm text-white/50 hover:text-white transition-colors">Home</Link>
-        <Link to="/login" className="text-sm text-white/50 hover:text-white transition-colors">Log in</Link>
-        <Link
-          to="/register"
-          className="text-sm bg-[#3ECF8E] text-[#0B0E14] font-medium rounded-lg px-4 py-2 hover:bg-[#5adba3] transition-colors"
-        >
-          Get started
-        </Link>
-      </div>
-
-      <Link
-        to="/login"
-        className="sm:hidden text-sm bg-[#3ECF8E] text-[#0B0E14] font-medium rounded-lg px-4 py-2 hover:bg-[#5adba3] transition-colors"
-      >
-        Log in
-      </Link>
-    </nav>
-  );
-}
 
 /* ---------------- Footer ---------------- */
-function Footer() {
-  return (
-    <footer className="border-t border-white/8 px-5 sm:px-8 py-10 mt-20">
-      <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2.5">
-          <div className="w-6 h-6 rounded-md bg-[#3ECF8E] flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-[#0B0E14]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <span className="text-sm text-white/50">© {new Date().getFullYear()} TruthLens. All rights reserved.</span>
-        </div>
-        <div className="flex items-center gap-6">
-          <Link to="/" className="text-sm text-white/40 hover:text-white/70 transition-colors">Home</Link>
-          <Link to="/contact" className="text-sm text-white/40 hover:text-white/70 transition-colors">Contact</Link>
-        </div>
-      </div>
-    </footer>
-  );
-}
+
 
 /* ---------------- Info card ---------------- */
 function InfoCard({ icon, title, value, delay = 0 }) {
