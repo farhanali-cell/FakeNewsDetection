@@ -91,7 +91,7 @@ export default function Contact() {
 
       <Navbar />
 
-      <main className="px-5 sm:px-8 py-14 sm:py-20 max-w-6xl mx-auto">
+      <main className="px-5 sm:px-8 py-20 sm:py-20 max-w-6xl mx-auto">
         {/* Hero */}
         <div className="text-center max-w-2xl mx-auto mb-14 animate-[fadeUp_0.6s_ease-out_both]">
           <span className="inline-block px-3 py-1 rounded-full text-[11px] font-medium tracking-wide uppercase bg-[#3ECF8E]/10 text-[#3ECF8E] mb-4">
