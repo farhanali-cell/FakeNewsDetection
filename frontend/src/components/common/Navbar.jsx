@@ -29,7 +29,7 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="#top" className="flex items-center gap-2.5">
+        <Link to="/" className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-[#3ECF8E] flex items-center justify-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -52,7 +52,7 @@ export default function Navbar() {
           >
             TruthLens
           </span>
-        </a>
+        </Link>
 
         <div className="hidden md:flex items-center gap-8 text-sm text-white/60">
           <a href="#how" className="hover:text-white transition-colors">
