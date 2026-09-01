@@ -146,13 +146,14 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
 }
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
-DEFAULT_FROM_EMAIL = f"TruthLens <{EMAIL_HOST_USER}>"
+# Email notifications — Resend ka HTTP API (port 443) use karte hain, SMTP nahi.
+# Wajah: Render jaise hosts pe outbound SMTP (port 587/25) block/hang ho jaata
+# hai, jo gunicorn worker ko crash kar deta tha. HTTPS hamesha open rehta hai.
+RESEND_API_KEY = config("RESEND_API_KEY")
+CONTACT_NOTIFICATION_EMAIL = config(
+    "CONTACT_NOTIFICATION_EMAIL", default="onboarding@resend.dev"
+)
+DEFAULT_FROM_EMAIL = "TruthLens <onboarding@resend.dev>"
 
 FRONTEND_URL = config("FRONTEND_URL", default="http://localhost:5173")
 

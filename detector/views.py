@@ -8,7 +8,6 @@ from .serializers import RegisterSerializer
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
-from django.core.mail import send_mail
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
@@ -284,16 +283,27 @@ def submit_contact(request):
     if serializer.is_valid():
         contact = serializer.save()
 
-        # Admin ko notification email
+        # Admin ko notification email — Resend ka HTTP API (port 443) use
+        # karte hain, SMTP nahi. Isliye hang/timeout ka koi risk nahi, aur
+        # ye 5-second cap ke andar hi respond kar deta hai.
         try:
-            send_mail(
-                subject=f"[TruthLens Contact] {contact.subject}",
-                message=(
-                    f"From: {contact.name} ({contact.email})\n\n" f"{contact.message}"
-                ),
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[settings.EMAIL_HOST_USER],
-                fail_silently=True,
+            requests.post(
+                "https://api.resend.com/emails",
+                headers={
+                    "Authorization": f"Bearer {settings.RESEND_API_KEY}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "from": settings.DEFAULT_FROM_EMAIL,
+                    "to": [settings.CONTACT_NOTIFICATION_EMAIL],
+                    "reply_to": contact.email,
+                    "subject": f"[TruthLens Contact] {contact.subject}",
+                    "text": (
+                        f"From: {contact.name} ({contact.email})\n\n"
+                        f"{contact.message}"
+                    ),
+                },
+                timeout=5,
             )
         except Exception:
             pass  # message DB mein save ho chuka, email fail hone se request fail nahi honi chahiye
