@@ -123,10 +123,10 @@ export default function AdminDashboard() {
 
         <div className="p-4 border-t border-white/10 space-y-2">
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/")}
             className="w-full text-left px-4 py-2.5 rounded-lg text-sm text-white/60 hover:bg-white/5 hover:text-white transition-colors"
           >
-            ← Back to User Dashboard
+            ← Back to Home
           </button>
           <button
             onClick={() => {
@@ -224,7 +224,7 @@ export default function AdminDashboard() {
                       {filteredUsers.map((u) => (
                         <tr
                           key={u.id}
-                          className="border-t border-white/5 hover:bg-white/[0.02]"
+                          className="border-t border-white/5 hover:bg-white/2"
                         >
                           <td className="px-5 py-3">{u.username}</td>
                           <td className="px-5 py-3 text-white/60">{u.email}</td>
@@ -296,7 +296,7 @@ export default function AdminDashboard() {
                       {filteredSubmissions.map((s) => (
                         <tr
                           key={s.id}
-                          className="border-t border-white/5 hover:bg-white/[0.02]"
+                          className="border-t border-white/5 hover:bg-white/2"
                         >
                           <td className="px-5 py-3">{s.username}</td>
                           <td className="px-5 py-3 text-white/60 max-w-xs truncate">
