@@ -10,21 +10,28 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     const username = localStorage.getItem("username");
+    const isStaff = localStorage.getItem("is_staff") === "true";
     if (token && username) {
-      setUser({ username });
+      setUser({ username, isStaff });
     }
     setLoading(false);
   }, []);
 
   const login = async (username, password) => {
     const response = await api.post("/auth/login/", { username, password });
-    const { access, refresh, username: returnedUsername } = response.data;
+    const {
+      access,
+      refresh,
+      username: returnedUsername,
+      is_staff,
+    } = response.data;
 
     localStorage.setItem("access_token", access);
     localStorage.setItem("refresh_token", refresh);
     localStorage.setItem("username", returnedUsername);
+    localStorage.setItem("is_staff", is_staff ? "true" : "false");
 
-    setUser({ username: returnedUsername });
+    setUser({ username: returnedUsername, isStaff: !!is_staff });
     return response.data;
   };
 
@@ -55,6 +62,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("username");
+    localStorage.removeItem("is_staff");
     setUser(null);
   };
 

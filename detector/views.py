@@ -1,7 +1,7 @@
 import re
 import requests
 import trafilatura
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .models import Submission
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import RegisterSerializer
@@ -13,6 +13,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.db.models import Avg
 from .models import ContactMessage
 from .serializers import ContactMessageSerializer
 from detector.ml_model.predict import predict_news
@@ -136,6 +137,8 @@ def register_user(request):
 
 # ============================
 # Login API: /api/auth/login/
+# NAYA: response mein ab "is_staff" bhi jata hai, taake frontend pata
+# laga sake ke ye admin hai ya normal user (Admin Dashboard link dikhane ke liye).
 # ============================
 @api_view(["POST"])
 def login_user(request):
@@ -153,6 +156,7 @@ def login_user(request):
                 "access": str(refresh.access_token),
                 "refresh": str(refresh),
                 "username": user.username,
+                "is_staff": user.is_staff,
             },
             status=status.HTTP_200_OK,
         )
@@ -313,3 +317,149 @@ def submit_contact(request):
             status=status.HTTP_201_CREATED,
         )
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# ============================
+# ============================
+# ADMIN DASHBOARD ENDPOINTS (NAYE)
+# Sab endpoints IsAdminUser use karte hain — matlab sirf wo user access
+# kar sakta hai jiska Django account "is_staff = True" ho (superuser
+# ye automatically satisfy karta hai).
+# ============================
+# ============================
+
+
+# ----------------------------
+# GET /api/admin/stats/
+# Dashboard ke top stat-cards ke liye overall numbers
+# ----------------------------
+@api_view(["GET"])
+@permission_classes([IsAdminUser])
+def admin_stats(request):
+    total_users = User.objects.count()
+    total_submissions = Submission.objects.count()
+    fake_count = Submission.objects.filter(prediction="FAKE").count()
+    real_count = Submission.objects.filter(prediction="REAL").count()
+    avg_confidence = Submission.objects.aggregate(avg=Avg("confidence"))["avg"] or 0
+    total_contacts = ContactMessage.objects.count()
+
+    return Response(
+        {
+            "total_users": total_users,
+            "total_submissions": total_submissions,
+            "fake_count": fake_count,
+            "real_count": real_count,
+            "avg_confidence": round(avg_confidence, 2),
+            "total_contacts": total_contacts,
+        },
+        status=status.HTTP_200_OK,
+    )
+
+
+# ----------------------------
+# GET /api/admin/users/
+# Sab registered users ki list (har user ki submission count ke sath)
+# ----------------------------
+@api_view(["GET"])
+@permission_classes([IsAdminUser])
+def admin_users_list(request):
+    users = User.objects.all().order_by("-date_joined")
+
+    data = [
+        {
+            "id": u.id,
+            "username": u.username,
+            "email": u.email,
+            "is_staff": u.is_staff,
+            "is_superuser": u.is_superuser,
+            "date_joined": u.date_joined,
+            "submission_count": u.submissions.count(),
+        }
+        for u in users
+    ]
+
+    return Response(data, status=status.HTTP_200_OK)
+
+
+# ----------------------------
+# DELETE /api/admin/users/<id>/
+# Ek user ko delete karta hai (superuser ko delete nahi hone dega, safety ke liye)
+# ----------------------------
+@api_view(["DELETE"])
+@permission_classes([IsAdminUser])
+def admin_delete_user(request, id):
+    try:
+        user = User.objects.get(id=id)
+    except User.DoesNotExist:
+        return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    if user.is_superuser:
+        return Response(
+            {"error": "Superuser account cannot be deleted from here."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    user.delete()
+    return Response(
+        {"message": "User deleted successfully."}, status=status.HTTP_200_OK
+    )
+
+
+# ----------------------------
+# GET /api/admin/submissions/
+# Sab users ki saari submissions ek jagah (username ke sath)
+# ----------------------------
+@api_view(["GET"])
+@permission_classes([IsAdminUser])
+def admin_submissions_list(request):
+    submissions = Submission.objects.select_related("user").order_by("-created_at")
+
+    data = [
+        {
+            "id": sub.id,
+            "username": sub.user.username,
+            "text_preview": sub.input_text[:100],
+            "prediction": sub.prediction,
+            "confidence": sub.confidence,
+            "created_at": sub.created_at,
+        }
+        for sub in submissions
+    ]
+
+    return Response(data, status=status.HTTP_200_OK)
+
+
+# ----------------------------
+# DELETE /api/admin/submissions/<id>/
+# Kisi bhi user ki submission delete kar sakta hai (admin power)
+# ----------------------------
+@api_view(["DELETE"])
+@permission_classes([IsAdminUser])
+def admin_delete_submission(request, id):
+    try:
+        submission = Submission.objects.get(id=id)
+        submission.delete()
+        return Response(
+            {"message": "Submission deleted successfully."}, status=status.HTTP_200_OK
+        )
+    except Submission.DoesNotExist:
+        return Response(
+            {"error": "Submission not found."}, status=status.HTTP_404_NOT_FOUND
+        )
+
+
+# ----------------------------
+# POST /api/admin/retrain/
+# NOTE: Ye abhi ek placeholder hai — real training script yahan
+# subprocess/management-command se call karni hai jab wo ready ho.
+# Filhaal ye sirf success response deta hai taake UI/button test ho sake.
+# ----------------------------
+@api_view(["POST"])
+@permission_classes([IsAdminUser])
+def admin_retrain(request):
+    return Response(
+        {
+            "message": "Retrain request received. (Connect your actual training script here.)"
+        },
+        status=status.HTTP_200_OK,
+    )
