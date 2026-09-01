@@ -109,20 +109,32 @@ export default function Navbar() {
                     onClick={() => setMenuOpen(false)}
                   />
                   <div className="absolute right-0 mt-2 w-48 rounded-xl border border-white/10 bg-[#10141D] shadow-xl shadow-black/40 py-1.5 z-50">
-                    <Link
-                      to="/dashboard"
-                      onClick={() => setMenuOpen(false)}
-                      className="block px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors"
-                    >
-                      Dashboard
-                    </Link>
-                    <Link
-                      to="/history"
-                      onClick={() => setMenuOpen(false)}
-                      className="block px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors"
-                    >
-                      History
-                    </Link>
+                    {user.isStaff ? (
+                      <Link
+                        to="/admin"
+                        onClick={() => setMenuOpen(false)}
+                        className="block px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                      >
+                        Dashboard
+                      </Link>
+                    ) : (
+                      <>
+                        <Link
+                          to="/dashboard"
+                          onClick={() => setMenuOpen(false)}
+                          className="block px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                        >
+                          Dashboard
+                        </Link>
+                        <Link
+                          to="/history"
+                          onClick={() => setMenuOpen(false)}
+                          className="block px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors"
+                        >
+                          History
+                        </Link>
+                      </>
+                    )}
                     <div className="my-1 border-t border-white/10" />
                     <button
                       onClick={handleLogout}
