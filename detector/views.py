@@ -1,4 +1,5 @@
 import re
+import resend
 import requests
 import trafilatura
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -227,12 +228,15 @@ def forgot_password(request):
     token = token_generator.make_token(user)
     reset_link = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"
 
-    send_mail(
-        subject="Reset your TruthLens password",
-        message=f"Click the link below to reset your password:\n\n{reset_link}\n\nIf you did not request this, ignore this email.",
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[email],
-        fail_silently=False,
+    resend.api_key = settings.RESEND_API_KEY
+
+    resend.Emails.send(
+        {
+            "from": settings.DEFAULT_FROM_EMAIL,
+            "to": [email],
+            "subject": "Reset your TruthLens password",
+            "text": f"Click the link below to reset your password:\n\n{reset_link}\n\nIf you did not request this, ignore this email.",
+        }
     )
 
     return Response(
