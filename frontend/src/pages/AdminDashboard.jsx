@@ -95,7 +95,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0B0E14] text-[#E8EAED] flex">
+    <div className="h-screen bg-[#0B0E14] text-[#E8EAED] flex overflow-hidden">
       {/* Sidebar */}
       <aside className="w-64 bg-[#10141F] border-r border-white/10 flex flex-col shrink-0">
         <div className="p-6 border-b border-white/10">
