@@ -320,7 +320,7 @@ export default function AdminDashboard() {
                           <td className="px-5 py-3 text-right">
                             <button
                               onClick={() => handleDeleteSubmission(s.id)}
-                              className="text-[#E8935B] hover:underline text-xs font-medium"
+                              className="text-[#E8935B] hover:underline text-xs font-medium cursor-pointer"
                             >
                               Delete
                             </button>
