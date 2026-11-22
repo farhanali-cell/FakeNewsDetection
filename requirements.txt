@@ -48,3 +48,4 @@ tzlocal==5.4.4
 urllib3==2.7.0
 whitenoise==6.12.0
 resend==2.42.0
+vaderSentiment==3.3.2

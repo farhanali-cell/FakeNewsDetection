@@ -96,7 +96,7 @@ def detect_news(request):
 
     result = predict_news(text)
 
-    label = result["prediction"].upper() # "REAL" or "FAKE"
+    label = result["prediction"].upper()  # "REAL" or "FAKE"
     confidence = result["confidence"] if result["confidence"] is not None else 0
     top_keywords = result["top_keywords"]
 
@@ -115,6 +115,10 @@ def detect_news(request):
             "text_preview": text[:100],
             "top_keywords": top_keywords,
             "source_url": source_url,
+            "model_leaning": result["model_leaning"],
+            "explanation": result["explanation"],
+            "signals": result["signals"],
+            "message": result["message"],
         },
         status=status.HTTP_200_OK,
     )
