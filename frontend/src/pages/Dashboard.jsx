@@ -629,6 +629,28 @@ export default function Dashboard() {
                     </div>
                   )}
 
+                  {result.explanation && result.explanation.length > 0 && (
+                    <div className="mt-6 pt-5 border-t border-white/8">
+                      <p className="text-[11px] font-medium text-white/40 uppercase tracking-wide mb-3">
+                        Why this result
+                      </p>
+                      <ul className="space-y-2.5">
+                        {result.explanation.map((line, idx) => (
+                          <li
+                            key={idx}
+                            className={
+                              idx === result.explanation.length - 1
+                                ? "text-xs text-white/35 leading-relaxed"
+                                : "text-sm text-white/70 leading-relaxed"
+                            }
+                          >
+                            {line}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
                   {result.top_keywords && result.top_keywords.length > 0 && (
                     <div className="mt-6 pt-5 border-t border-white/8">
                       <p className="text-[11px] font-medium text-white/40 uppercase tracking-wide mb-3">
