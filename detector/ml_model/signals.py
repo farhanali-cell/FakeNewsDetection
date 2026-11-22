@@ -21,6 +21,9 @@ CLICKBAIT_PHRASES = [
     "secret",
 ]
 
+# Word boundary ke saath match, taake "secret" "Secretary" mein na mile
+CLICKBAIT_REGEX = [(p, re.compile(rf"\b{re.escape(p)}\b")) for p in CLICKBAIT_PHRASES]
+
 ATTRIBUTION_PATTERN = re.compile(
     r"\b(said|says|according to|told|reported|announced|stated|confirmed|explained)\b",
     re.IGNORECASE,
@@ -71,7 +74,7 @@ def analyze_signals(text: str) -> dict:
     caps_words = [w for w in words if len(w) >= 4 and w.isupper()]
     caps_ratio = len(caps_words) / total_words if total_words else 0.0
 
-    clickbait_found = [p for p in CLICKBAIT_PHRASES if p in lowered]
+    clickbait_found = [p for p, rx in CLICKBAIT_REGEX if rx.search(lowered)]
 
     sentences = _split_sentences(text)[:MAX_SENTENCES]
     compounds = [_analyzer.polarity_scores(s)["compound"] for s in sentences]

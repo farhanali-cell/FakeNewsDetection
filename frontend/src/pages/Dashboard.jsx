@@ -338,6 +338,85 @@ function TrendChart({ items }) {
   );
 }
 
+/* ---------------- NLP signals panel ---------------- */
+function SignalsPanel({ signals }) {
+  const s = signals;
+  const phrases = s.clickbait_phrases ?? [];
+  const tone = s.emotional_tone ?? "neutral";
+
+  const rows = [
+    {
+      label: "Emotional tone",
+      value: tone.charAt(0).toUpperCase() + tone.slice(1),
+      sub: `${Math.round((s.emotional_share ?? 0) * 100)}% of sentences strongly emotional`,
+      flag: tone === "highly emotional",
+    },
+    {
+      label: "ALL CAPS words",
+      value: s.caps_words ?? 0,
+      sub: `${((s.caps_ratio ?? 0) * 100).toFixed(1)}% of words`,
+      flag: (s.caps_ratio ?? 0) >= 0.05,
+    },
+    {
+      label: "Exclamation marks",
+      value: s.exclamation_count ?? 0,
+      sub: "3 or more is flagged",
+      flag: (s.exclamation_count ?? 0) >= 3,
+    },
+    {
+      label: "Clickbait phrases",
+      value: phrases.length,
+      sub: phrases.length ? phrases.join(", ") : "None found",
+      flag: phrases.length > 0,
+    },
+    {
+      label: "Quotes / attributions",
+      value: `${s.quote_count ?? 0} / ${s.attribution_count ?? 0}`,
+      sub: "quoted passages / attribution phrases",
+      flag: false,
+    },
+    {
+      label: "Numbers",
+      value: s.number_count ?? 0,
+      sub: `${s.date_count ?? 0} date references (may overlap)`,
+      flag: false,
+    },
+    {
+      label: "Sentence length",
+      value: s.avg_sentence_length ?? 0,
+      sub: "average words per sentence",
+      flag: false,
+    },
+  ];
+
+  return (
+    <div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {rows.map((r) => (
+          <div
+            key={r.label}
+            className="rounded-lg border border-white/8 bg-black/20 px-3.5 py-3 min-w-0"
+          >
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] text-white/40">{r.label}</span>
+              <span
+                className="w-1.5 h-1.5 rounded-full shrink-0"
+                style={{ backgroundColor: r.flag ? "#E8935B" : "#ffffff22" }}
+              />
+            </div>
+            <p className="text-base font-semibold text-white mt-1">{r.value}</p>
+            <p className="text-[11px] text-white/35 mt-0.5 truncate">{r.sub}</p>
+          </div>
+        ))}
+      </div>
+      <p className="text-[11px] text-white/30 mt-3 leading-relaxed">
+        Heuristic indicators from simple text rules. They support the verdict
+        but do not prove it.
+      </p>
+    </div>
+  );
+}
+
 /* ---------------- Main Dashboard ---------------- */
 export default function Dashboard() {
   const [text, setText] = useState("");
@@ -648,6 +727,15 @@ export default function Dashboard() {
                           </li>
                         ))}
                       </ul>
+                    </div>
+                  )}
+
+                  {result.signals && result.signals.emotional_tone && (
+                    <div className="mt-6 pt-5 border-t border-white/8">
+                      <p className="text-[11px] font-medium text-white/40 uppercase tracking-wide mb-3">
+                        Text signals
+                      </p>
+                      <SignalsPanel signals={result.signals} />
                     </div>
                   )}
 
