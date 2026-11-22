@@ -1,0 +1,116 @@
+{
+  "total_rows": 96834,
+  "test_rows": 19367,
+  "accuracy_%": 95.09,
+  "FAKE": {
+    "precision": 0.9428,
+    "recall": 0.9346,
+    "f1": 0.9387
+  },
+  "REAL": {
+    "precision": 0.9563,
+    "recall": 0.9619,
+    "f1": 0.9591
+  },
+  "confusion_matrix": {
+    "rows_actual_cols_pred_[FAKE,REAL]": [
+      [
+        7275,
+        509
+      ],
+      [
+        441,
+        11142
+      ]
+    ]
+  },
+  "per_source": {
+    "BBC Business": {
+      "correct": 24,
+      "total": 28,
+      "acc_%": 85.7
+    },
+    "BBC Sport": {
+      "correct": 42,
+      "total": 45,
+      "acc_%": 93.3
+    },
+    "CNBC": {
+      "correct": 25,
+      "total": 27,
+      "acc_%": 92.6
+    },
+    "DataSet_Misinfo_FAKE": {
+      "correct": 3775,
+      "total": 4043,
+      "acc_%": 93.4
+    },
+    "DataSet_Misinfo_TRUE": {
+      "correct": 6521,
+      "total": 6859,
+      "acc_%": 95.1
+    },
+    "Fake": {
+      "correct": 3390,
+      "total": 3512,
+      "acc_%": 96.5
+    },
+    "FakeHealth-HealthRelease": {
+      "correct": 80,
+      "total": 123,
+      "acc_%": 65.0
+    },
+    "FakeHealth-HealthStory": {
+      "correct": 209,
+      "total": 310,
+      "acc_%": 67.4
+    },
+    "GossipCop": {
+      "correct": 56,
+      "total": 115,
+      "acc_%": 48.7
+    },
+    "The Onion Business": {
+      "correct": 9,
+      "total": 11,
+      "acc_%": 81.8
+    },
+    "The Onion Sports": {
+      "correct": 12,
+      "total": 14,
+      "acc_%": 85.7
+    },
+    "True": {
+      "correct": 4274,
+      "total": 4280,
+      "acc_%": 99.9
+    }
+  },
+  "confidence_bands": [
+    {
+      "band": "50-60",
+      "n": 785,
+      "accuracy_%": 59.6
+    },
+    {
+      "band": "60-70",
+      "n": 915,
+      "accuracy_%": 73.8
+    },
+    {
+      "band": "70-80",
+      "n": 1246,
+      "accuracy_%": 86.1
+    },
+    {
+      "band": "80-90",
+      "n": 2442,
+      "accuracy_%": 94.2
+    },
+    {
+      "band": "90-100",
+      "n": 13979,
+      "accuracy_%": 99.4
+    }
+  ]
+}

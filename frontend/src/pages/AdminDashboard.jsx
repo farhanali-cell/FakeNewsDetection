@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
+import ModelInfo from "../components/admin/ModelInfo";
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
@@ -12,8 +13,6 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [retraining, setRetraining] = useState(false);
-  const [retrainMessage, setRetrainMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -61,21 +60,6 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleRetrain = async () => {
-    if (!window.confirm("Start model retraining? This may take a while."))
-      return;
-    setRetraining(true);
-    setRetrainMessage("");
-    try {
-      const res = await api.post("/admin/retrain/");
-      setRetrainMessage(res.data.message || "Retrain started.");
-    } catch (err) {
-      setRetrainMessage(err.response?.data?.error || "Retrain failed.");
-    } finally {
-      setRetraining(false);
-    }
-  };
-
   const filteredUsers = users.filter(
     (u) =>
       u.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -113,7 +97,7 @@ export default function AdminDashboard() {
     { id: "stats", label: "Overview" },
     { id: "users", label: "Users" },
     { id: "submissions", label: "Submissions" },
-    { id: "retrain", label: "Retrain Model" },
+    { id: "model", label: "Model Info" },
   ];
 
   return (
@@ -458,28 +442,8 @@ export default function AdminDashboard() {
                 </div>
               )}
 
-              {/* RETRAIN TAB */}
-              {activeTab === "retrain" && (
-                <div className="bg-[#10141F] border border-white/10 rounded-xl p-8 max-w-xl">
-                  <h3 className="font-semibold mb-2">Retrain ML Model</h3>
-                  <p className="text-sm text-white/50 mb-6">
-                    This triggers the model retraining pipeline using the latest
-                    dataset. Depending on data size, this may take some time.
-                  </p>
-                  <button
-                    onClick={handleRetrain}
-                    disabled={retraining}
-                    className="bg-[#3ECF8E] text-[#0B0E14] font-semibold px-6 py-2.5 rounded-lg hover:bg-[#3ECF8E]/90 transition-colors disabled:opacity-50"
-                  >
-                    {retraining ? "Retraining..." : "Start Retrain"}
-                  </button>
-                  {retrainMessage && (
-                    <p className="mt-4 text-sm text-white/60 bg-white/5 rounded-lg p-3">
-                      {retrainMessage}
-                    </p>
-                  )}
-                </div>
-              )}
+              {/* MODEL INFO TAB */}
+              {activeTab === "model" && <ModelInfo />}
             </>
           )}
         </div>
