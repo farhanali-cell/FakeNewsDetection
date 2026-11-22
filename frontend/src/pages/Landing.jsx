@@ -4,7 +4,6 @@ import WhatsAppFloat from "../components/common/WhatsAppFloat";
 import Hero from "../components/landing/Hero";
 import LiveDemoSection from "../components/landing/LiveDemoSection";
 import HowItWorks from "../components/landing/HowItWorks";
-import BilingualSection from "../components/landing/BilingualSection";
 import Capabilities from "../components/landing/Capabilities";
 import CTASection from "../components/landing/CTASection";
 
@@ -17,7 +16,6 @@ export default function Landing() {
       <Hero />
       <LiveDemoSection />
       <HowItWorks />
-      <BilingualSection />
       <Capabilities />
       <CTASection />
       <Footer />

@@ -19,14 +19,15 @@ from .models import ContactMessage
 from .serializers import ContactMessageSerializer
 from detector.ml_model.predict import predict_news
 
-# NAYA: agar input ek URL lage to isse match karega
+# Matches the input if it looks like a URL
+
 URL_REGEX = re.compile(r"^https?://\S+$")
 
 
 def extract_text_from_url(url: str):
     """
-    URL se article ka clean text nikalta hai.
-    Return: (text, error_message) — dono mein se ek hamesha None hoga.
+    Extracts the clean article text from a URL.
+    Returns: (text, error_message), exactly one of which is always None.
     """
     downloaded = None
     try:
@@ -35,9 +36,9 @@ def extract_text_from_url(url: str):
         downloaded = None
 
     if not downloaded:
-        # Fallback: kuch sites trafilatura ka default fetcher block kar deti
-        # hain, isliye normal requests se bhi try kar lete hain (browser jaisa
-        # User-Agent bhej k, warna kai sites bot samajh k block kar deti hain).
+        # Fallback: some sites block trafilatura's default fetcher, so we also
+        # try plain requests with a browser-like User-Agent, otherwise many
+        # sites treat the request as a bot and block it.
         try:
             resp = requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
             resp.raise_for_status()
@@ -45,7 +46,7 @@ def extract_text_from_url(url: str):
         except Exception:
             return (
                 None,
-                "Is URL tak pohanchne mein masla hua. Link check karein ya seedha text paste karein.",
+                "Could not reach this URL. Please check the link or paste the article text directly.",
             )
 
     try:
@@ -56,7 +57,7 @@ def extract_text_from_url(url: str):
     if not extracted or len(extracted.strip()) < 30:
         return (
             None,
-            "Is URL se article extract nahi ho saka. Please article ka text seedha paste karein.",
+            "Could not extract an article from this URL. Please paste the article text directly.",
         )
 
     return extracted.strip(), None
@@ -64,13 +65,12 @@ def extract_text_from_url(url: str):
 
 # ============================
 # API Endpoint: /api/detect/
-# Model loading ab sirf predict.py mein hota hai (Urdu + English dono).
-# Yahan views.py mein alag se koi joblib.load() nahi — wahi purana
-# duplicate loading crash ki wajah tha.
+# Model loading happens only in predict.py. There is no separate
+# joblib.load() here, because duplicate loading used to crash the app.
 #
-# NAYA: ab ye endpoint plain text AUR URL dono accept karta hai.
-# Agar input ek URL lage, pehle uska article text extract karte hain,
-# phir wahi extracted text predict_news() ko bhejte hain.
+# This endpoint accepts both plain text and a URL. If the input looks
+# like a URL, we first extract the article text from it, then pass the
+# extracted text to predict_news().
 # ============================
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -96,12 +96,11 @@ def detect_news(request):
 
     result = predict_news(text)
 
-    label = result["prediction"].upper()  # "REAL" ya "FAKE"
-    language = result["language"]
+    label = result["prediction"].upper() # "REAL" or "FAKE"
     confidence = result["confidence"] if result["confidence"] is not None else 0
     top_keywords = result["top_keywords"]
 
-    # Database mein save karo
+    # Save to the database
     Submission.objects.create(
         user=request.user,
         input_text=text,
@@ -112,7 +111,6 @@ def detect_news(request):
     return Response(
         {
             "prediction": label,
-            "language": language,
             "confidence": confidence,
             "text_preview": text[:100],
             "top_keywords": top_keywords,
@@ -138,8 +136,8 @@ def register_user(request):
 
 # ============================
 # Login API: /api/auth/login/
-# NAYA: response mein ab "is_staff" bhi jata hai, taake frontend pata
-# laga sake ke ye admin hai ya normal user (Admin Dashboard link dikhane ke liye).
+# The response now also includes "is_staff", so the frontend can tell
+# whether the user is an admin (to show the Admin Dashboard link).
 # ============================
 @api_view(["POST"])
 def login_user(request):
@@ -217,8 +215,8 @@ def forgot_password(request):
     try:
         user = User.objects.get(email=email)
     except User.DoesNotExist:
-        # Security ke liye: hamesha same success message do,
-        # taake koi ye pata na laga sake konsa email registered hai
+        # For security, always return the same success message so nobody
+        # can find out which emails are registered
         return Response(
             {"message": "If this email is registered, a reset link has been sent."},
             status=status.HTTP_200_OK,
@@ -291,9 +289,9 @@ def submit_contact(request):
     if serializer.is_valid():
         contact = serializer.save()
 
-        # Admin ko notification email — Resend ka HTTP API (port 443) use
-        # karte hain, SMTP nahi. Isliye hang/timeout ka koi risk nahi, aur
-        # ye 5-second cap ke andar hi respond kar deta hai.
+        # Notify the admin by email using Resend's HTTP API (port 443), not
+        # SMTP. This avoids any hang/timeout risk and stays within the
+        # 5-second cap.
         try:
             requests.post(
                 "https://api.resend.com/emails",
@@ -314,7 +312,7 @@ def submit_contact(request):
                 timeout=5,
             )
         except Exception:
-            pass  # message DB mein save ho chuka, email fail hone se request fail nahi honi chahiye
+            pass  # the message is already saved; an email failure must not fail the request
 
         return Response(
             {"message": "Your message has been sent successfully."},
@@ -325,17 +323,17 @@ def submit_contact(request):
 
 # ============================
 # ============================
-# ADMIN DASHBOARD ENDPOINTS (NAYE)
-# Sab endpoints IsAdminUser use karte hain — matlab sirf wo user access
-# kar sakta hai jiska Django account "is_staff = True" ho (superuser
-# ye automatically satisfy karta hai).
+# ADMIN DASHBOARD ENDPOINTS
+# All endpoints use IsAdminUser, meaning only users whose Django account
+# has is_staff = True can access them (a superuser satisfies this
+# automatically).
 # ============================
 # ============================
 
 
 # ----------------------------
 # GET /api/admin/stats/
-# Dashboard ke top stat-cards ke liye overall numbers
+# Overall numbers for the stat cards at the top of the dashboard
 # ----------------------------
 @api_view(["GET"])
 @permission_classes([IsAdminUser])
@@ -387,7 +385,7 @@ def admin_users_list(request):
 
 # ----------------------------
 # DELETE /api/admin/users/<id>/
-# Ek user ko delete karta hai (superuser ko delete nahi hone dega, safety ke liye)
+# Deletes a user (a superuser cannot be deleted, for safety)
 # ----------------------------
 @api_view(["DELETE"])
 @permission_classes([IsAdminUser])
@@ -411,7 +409,7 @@ def admin_delete_user(request, id):
 
 # ----------------------------
 # GET /api/admin/submissions/
-# Sab users ki saari submissions ek jagah (username ke sath)
+# All submissions from all users in one place (with usernames)
 # ----------------------------
 @api_view(["GET"])
 @permission_classes([IsAdminUser])
@@ -435,7 +433,7 @@ def admin_submissions_list(request):
 
 # ----------------------------
 # DELETE /api/admin/submissions/<id>/
-# Kisi bhi user ki submission delete kar sakta hai (admin power)
+# Deletes any user's submission (admin power)
 # ----------------------------
 @api_view(["DELETE"])
 @permission_classes([IsAdminUser])
@@ -454,9 +452,9 @@ def admin_delete_submission(request, id):
 
 # ----------------------------
 # POST /api/admin/retrain/
-# NOTE: Ye abhi ek placeholder hai — real training script yahan
-# subprocess/management-command se call karni hai jab wo ready ho.
-# Filhaal ye sirf success response deta hai taake UI/button test ho sake.
+# NOTE: This is a placeholder for now. The real training script needs to be
+# called here (via subprocess or a management command) once it is ready.
+# For now it only returns a success response so the UI/button can be tested.
 # ----------------------------
 @api_view(["POST"])
 @permission_classes([IsAdminUser])
