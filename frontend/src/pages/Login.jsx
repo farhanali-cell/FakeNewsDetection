@@ -25,7 +25,17 @@ export default function Login() {
         navigate("/dashboard");
       }
     } catch (err) {
-      setError("Invalid username or password.");
+      if (!err.response) {
+        setError(
+          "Cannot reach the server. It may be waking up, please try again in a few seconds.",
+        );
+      } else if (err.response.status === 401) {
+        setError("Invalid username or password.");
+      } else if (err.response.status >= 500) {
+        setError("The server had a problem. Please try again in a moment.");
+      } else {
+        setError("Sign in failed. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
