@@ -24,10 +24,19 @@ export default function Register() {
       setSuccess(true);
       setTimeout(() => navigate("/login"), 1500);
     } catch (err) {
-      const msg =
-        err.response?.data?.username?.[0] ||
-        err.response?.data?.password?.[0] ||
-        "Registration failed. Please try again.";
+      const data = err.response?.data;
+      let msg;
+      if (!err.response) {
+        msg =
+          "Cannot reach the server. Please check your connection and try again.";
+      } else {
+        msg =
+          data?.username?.[0] ||
+          data?.email?.[0] ||
+          data?.password?.[0] ||
+          data?.error ||
+          "Registration failed. Please try again.";
+      }
       setError(msg);
     } finally {
       setLoading(false);

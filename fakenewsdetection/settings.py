@@ -121,13 +121,11 @@ STORAGES = {
 }
 
 
-# CORS — production mein specific origins allow karte hain (Vercel frontend)
-CORS_ALLOWED_ORIGINS = config(
-    "CORS_ALLOWED_ORIGINS", default="http://localhost:5173", cast=Csv()
-)
-
+# CORS — Vercel (production) aur local dev dono origins allow karte hain
 CORS_ALLOWED_ORIGINS = [
     "https://fake-news-detection-eight-mu.vercel.app",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
