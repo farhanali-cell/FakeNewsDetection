@@ -18,7 +18,6 @@ CLICKBAIT_PHRASES = [
     "share before",
     "goes viral",
     "must see",
-    "secret",
 ]
 
 # Word boundary ke saath match, taake "secret" "Secretary" mein na mile
