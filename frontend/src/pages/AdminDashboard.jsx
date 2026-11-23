@@ -292,7 +292,7 @@ export default function AdminDashboard() {
                             </p>
                             <VerdictBadge prediction={s.prediction} />
                             <span className="text-xs text-white/40 w-12 text-right shrink-0">
-                              {s.confidence}%
+                              {s.confidence != null ? `${s.confidence}%` : "—"}
                             </span>
                           </div>
                         ))}
@@ -413,7 +413,9 @@ export default function AdminDashboard() {
                               {s.prediction}
                             </span>
                           </td>
-                          <td className="px-5 py-3">{s.confidence}%</td>
+                          <td className="px-5 py-3">
+                            {s.confidence != null ? `${s.confidence}%` : "—"}
+                          </td>
                           <td className="px-5 py-3 text-white/40">
                             {new Date(s.created_at).toLocaleDateString()}
                           </td>

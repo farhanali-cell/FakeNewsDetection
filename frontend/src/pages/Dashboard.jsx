@@ -817,7 +817,12 @@ export default function Dashboard() {
                 ) : (
                   <div className="space-y-1">
                     {history.slice(0, 5).map((item) => {
-                      const fake = item.prediction === "FAKE";
+                      const dotColor =
+                        item.prediction === "FAKE"
+                          ? "#E8935B"
+                          : item.prediction === "UNCERTAIN"
+                            ? "#8B93A6"
+                            : "#3ECF8E";
                       return (
                         <div
                           key={item.id}
@@ -826,14 +831,16 @@ export default function Dashboard() {
                           <span
                             className="w-2 h-2 rounded-full shrink-0"
                             style={{
-                              backgroundColor: fake ? "#E8935B" : "#3ECF8E",
+                              backgroundColor: dotColor,
                             }}
                           />
                           <p className="text-white/60 text-xs truncate flex-1">
                             {item.text_preview}
                           </p>
                           <span className="text-[11px] text-white/30 shrink-0">
-                            {item.confidence}%
+                            {item.confidence != null
+                              ? `${item.confidence}%`
+                              : "—"}
                           </span>
                         </div>
                       );
