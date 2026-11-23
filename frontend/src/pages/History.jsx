@@ -473,7 +473,7 @@ export default function History() {
                       </span>
 
                       <span className="text-xs text-white/40 w-10 text-right shrink-0">
-                        {item.confidence}%
+                        {item.confidence != null ? `${item.confidence}%` : "—"}
                       </span>
 
                       <svg

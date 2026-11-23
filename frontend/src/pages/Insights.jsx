@@ -335,7 +335,7 @@ function ConfidenceAreaChart({ items }) {
       </div>
     );
   }
-  
+
   const points = [...items].filter((p) => p.confidence != null).reverse();
   const width = 100;
   const height = 100;
@@ -345,6 +345,7 @@ function ConfidenceAreaChart({ items }) {
     x: points.length > 1 ? i * stepX : width / 2,
     y: height - (p.confidence / 100) * height,
     fake: p.prediction === "FAKE",
+    uncertain: p.prediction === "UNCERTAIN",
   }));
 
   const linePath = coords
@@ -380,7 +381,7 @@ function ConfidenceAreaChart({ items }) {
             cx={c.x}
             cy={c.y}
             r="1.4"
-            fill={c.fake ? "#E8935B" : "#3ECF8E"}
+            fill={c.uncertain ? "#8B93A6" : c.fake ? "#E8935B" : "#3ECF8E"}
             vectorEffect="non-scaling-stroke"
           />
         ))}

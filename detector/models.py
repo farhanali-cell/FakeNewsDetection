@@ -3,10 +3,12 @@ from django.contrib.auth.models import User
 
 
 class Submission(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='submissions')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="submissions")
     input_text = models.TextField()
-    prediction = models.CharField(max_length=10)   # FAKE / REAL
-    confidence = models.FloatField()
+    prediction = models.CharField(max_length=10)  # FAKE / REAL / UNCERTAIN
+    confidence = models.FloatField(
+        null=True, blank=True
+    )  # None = score nahi (bohat chhota text)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

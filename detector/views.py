@@ -97,7 +97,7 @@ def detect_news(request):
     result = predict_news(text)
 
     label = result["prediction"].upper()  # "REAL" or "FAKE"
-    confidence = result["confidence"] if result["confidence"] is not None else 0
+    confidence = result["confidence"]  # None ho sakta hai (chhota text), 0 nahi banana
     top_keywords = result["top_keywords"]
 
     # Save to the database
