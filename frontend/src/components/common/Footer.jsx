@@ -87,20 +87,40 @@ export default function Footer() {
             </h3>
 
             <ul className="space-y-3 text-sm">
-              <li className="text-white/45 hover:text-[#3ECF8E] transition-colors cursor-pointer">
-                Documentation
+              <li>
+                <Link
+                  to="/documentation"
+                  className="text-white/45 hover:text-[#3ECF8E] transition-colors"
+                >
+                  Documentation
+                </Link>
               </li>
 
-              <li className="text-white/45 hover:text-[#3ECF8E] transition-colors cursor-pointer">
-                Research Paper
+              <li>
+                <Link
+                  to="/project-report"
+                  className="text-white/45 hover:text-[#3ECF8E] transition-colors"
+                >
+                  Project Report
+                </Link>
               </li>
 
-              <li className="text-white/45 hover:text-[#3ECF8E] transition-colors cursor-pointer">
-                Dataset
+              <li>
+                <Link
+                  to="/dataset"
+                  className="text-white/45 hover:text-[#3ECF8E] transition-colors"
+                >
+                  Dataset
+                </Link>
               </li>
 
-              <li className="text-white/45 hover:text-[#3ECF8E] transition-colors cursor-pointer">
-                API Guide
+              <li>
+                <Link
+                  to="/api-guide"
+                  className="text-white/45 hover:text-[#3ECF8E] transition-colors"
+                >
+                  API Guide
+                </Link>
               </li>
             </ul>
           </div>

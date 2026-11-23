@@ -9,6 +9,10 @@ import Dashboard from "./pages/Dashboard";
 import History from "./pages/History";
 import Insights from "./pages/Insights";
 import Contact from "./pages/Contact";
+import Documentation from "./pages/Documentation";
+import Dataset from "./pages/Dataset";
+import ApiGuide from "./pages/ApiGuide";
+import ProjectReport from "./pages/ProjectReport";
 import AdminDashboard from "./pages/AdminDashboard";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -95,6 +99,10 @@ function AppRoutes() {
           }
         />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/documentation" element={<Documentation />} />
+        <Route path="/dataset" element={<Dataset />} />
+        <Route path="/api-guide" element={<ApiGuide />} />
+        <Route path="/project-report" element={<ProjectReport />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
