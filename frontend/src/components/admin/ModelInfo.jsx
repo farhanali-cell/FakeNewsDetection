@@ -28,7 +28,7 @@ const pct = (x) => (x * 100).toFixed(2) + "%";
 
 function Section({ title, note, children }) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+    <section className="rounded-2xl border border-white/10 bg-white/3 p-5">
       <h3 className="text-lg font-semibold text-white">{title}</h3>
       {note && <p className="mt-1 text-sm text-white/55">{note}</p>}
       <div className="mt-4">{children}</div>
@@ -119,7 +119,7 @@ export default function ModelInfo() {
           </span>
         </p>
         <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[420px] text-left text-sm">
+          <table className="w-full min-w-105 text-left text-sm">
             <thead className="text-white/50">
               <tr>
                 <th className="py-2 pr-4 font-medium">Class</th>
@@ -147,7 +147,7 @@ export default function ModelInfo() {
         note="Rows are the actual label, columns are the model's prediction."
       >
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[360px] text-center text-sm">
+          <table className="w-full min-w-90 text-center text-sm">
             <thead className="text-white/50">
               <tr>
                 <th className="py-2"></th>
@@ -202,7 +202,7 @@ export default function ModelInfo() {
           </div>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[420px] text-left text-sm">
+          <table className="w-full min-w-105 text-left text-sm">
             <thead className="text-white/50">
               <tr>
                 <th className="py-2 pr-4 font-medium">Source</th>
@@ -228,7 +228,7 @@ export default function ModelInfo() {
         note="Higher confidence is more reliable. Below 60% the model is close to guessing, which is why those results are shown as UNCERTAIN."
       >
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[360px] text-left text-sm">
+          <table className="w-full min-w-90 text-left text-sm">
             <thead className="text-white/50">
               <tr>
                 <th className="py-2 pr-4 font-medium">Confidence</th>
