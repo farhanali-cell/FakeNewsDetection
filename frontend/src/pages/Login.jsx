@@ -6,6 +6,7 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [unlocked, setUnlocked] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -101,7 +102,11 @@ export default function Login() {
         </div>
 
         <div className="border border-white/8 bg-white/2 rounded-2xl p-7">
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-4"
+            autoComplete="off"
+          >
             {error && (
               <div className="bg-[#E8935B]/10 border border-[#E8935B]/25 text-[#E8935B] text-sm rounded-lg px-4 py-3">
                 {error}
@@ -117,7 +122,9 @@ export default function Login() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                autoFocus
+                autoComplete="off"
+                readOnly={!unlocked}
+                onFocus={() => setUnlocked(true)}
                 className="w-full bg-black/30 border border-white/10 text-[#E8EAED] rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#3ECF8E] focus:border-[#3ECF8E] transition-colors placeholder-white/25"
                 placeholder="Enter your username"
               />
@@ -141,6 +148,9 @@ export default function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  autoComplete="off"
+                  readOnly={!unlocked}
+                  onFocus={() => setUnlocked(true)}
                   className="w-full bg-black/30 border border-white/10 text-[#E8EAED] rounded-lg px-3.5 py-2.5 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-[#3ECF8E] focus:border-[#3ECF8E] transition-colors placeholder-white/25"
                   placeholder="Enter your password"
                 />
